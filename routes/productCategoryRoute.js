@@ -1,85 +1,19 @@
 const express = require("express");
-const ProductCategory = require("../db_mongo/schema/productCategory");
-const apiResponse = require("../utils/apiResponse");
-
 const router = express.Router();
 
-// Create a new category
-router.post("/category/", async (req, res) => {
-  const { category, subCategory } = req.body;
+// Require controller modules.
+const category_controller = require("../controllers/productCategoryController");
 
-  try {
-    const categoryData = new ProductCategory({
-      category,
-      subCategory,
-    });
-    await categoryData.save();
-    res.send(
-      apiResponse(
-        true,
-        "SUCCESS",
-        "Category inserted successfully.",
-        categoryData
-      )
-    );
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(apiResponse(false, "ERROR", error?.message, {}));
-  }
-});
+// Create a new category
+router.post("/category/", category_controller.new_category);
 
 // Get all category
-router.get("/category", async (req, res) => {
-  try {
-    const categoryData = await ProductCategory.find({});
-    res.send(apiResponse(true, "SUCCESS", "category data", categoryData));
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(apiResponse(false, "ERROR", error?.message, {}));
-  }
-});
+router.get("/category", category_controller.all_category_list);
 
 // Update a category
-router.put("/category/:id", async (req, res) => {
-  const { id } = req.params;
-  const { category, subCategory } = req.body;
-
-  try {
-    const categoryData = await ProductCategory.findByIdAndUpdate(
-      id,
-      {
-        category,
-        subCategory,
-      },
-      { new: true }
-    );
-    res.send(
-      apiResponse(
-        true,
-        "SUCCESS",
-        "cCtegory updated successfully",
-        categoryData
-      )
-    );
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(apiResponse(false, "ERROR", error?.message, {}));
-  }
-});
+router.put("/category/:id", category_controller.update_cateory);
 
 // Delete a category
-router.delete("/category/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const categoryData = await Product.findByIdAndDelete(id);
-    res.send(
-      apiResponse(true, "SUCCESS", "Product deleted successfully", categoryData)
-    );
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(apiResponse(false, "ERROR", error?.message, {}));
-  }
-});
+router.delete("/category/:id", category_controller.delete_category);
 
 module.exports = router;

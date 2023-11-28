@@ -1,4 +1,4 @@
-const Category = require("../db_mongo/schema/productCategory");
+const Category = require("../modals/schema/productCategory");
 
 // Category check
 const categoryCheck = async (category, subCategory, childCategory) => {
